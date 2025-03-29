@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - Melodía Llanera</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .products-container {
+            max-width: 1200px;
+            margin: 120px auto 40px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .products-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .products-header h2 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .products-header p {
+            color: var(--text-color);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 0 auto;
+            max-width: 1200px;
+            padding: 0 2rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 3rem;
+        }
+
+        .pagination-button {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            border: 1px solid var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-button:hover,
+        .pagination-button.active {
+            background-color: var(--primary-color);
+        }
+
+        .details-button {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-weight: 500;
+        }
+
+        .details-button:hover {
+            background-color: var(--accent-color);
+        }
+
+        .product-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1100;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: var(--secondary-color);
+            margin: 5% auto;
+            padding: 2rem;
+            width: 90%;
+            max-width: 900px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .product-modal.active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            font-size: 2rem;
+            color: var(--white);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--primary-color);
+        }
+
+        .modal-body {
+            color: var(--white);
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .modal-image-container {
+            width: 100%;
+        }
+
+        .modal-image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .modal-details {
+            text-align: left;
+        }
+
+        .modal-details h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .modal-details .price {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .product-specs {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .spec-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .spec-label {
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .spec-value {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .modal-body {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo-container">
+                <h1>Melodía Llanera</h1>
+            </div>
+            <div class="nav-links">
+                <!-- Usamos ruta relativa para subir dos niveles -->
+                <a href="http://localhost/InstrumentosLLaneros/index.php">Inicio</a>
+                <a href="products.html" class="active">Productos</a>
+                <a href="about.html">Nosotros</a>
+                <a href="contact.html">Contacto</a>
+            </div>
+            <div class="nav-actions">
+                <a href="login.html" class="auth-link">Login</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="products-container">
+            <div class="products-header">
+                <h2>Nuestros Instrumentos</h2>
+                <p>Descubre nuestra selección de auténticos instrumentos llaneros colombianos</p>
+            </div>
+            
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be loaded dynamically via JavaScript -->
+            </div>
+
+            <!-- Modal para detalles del producto -->
+            <div class="product-modal" id="productModal">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <div class="modal-body">
+                        <div class="modal-image-container">
+                            <img id="modalImage" src="" alt="">
+                        </div>
+                        <div class="modal-details">
+                            <h2 id="modalTitle"></h2>
+                            <p class="price" id="modalPrice"></p>
+                            <p id="modalDescription"></p>
+                            <div class="product-specs">
+                                <div class="spec-item">
+                                    <span class="spec-label">Peso</span>
+                                    <span class="spec-value" id="modalWeight"></span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Material</span>
+                                    <span class="spec-value" id="modalMaterial"></span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Dimensiones</span>
+                                    <span class="spec-value" id="modalDimensions"></span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Origen</span>
+                                    <span class="spec-value" id="modalOrigin"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pagination">
+                <button class="pagination-button active">1</button>
+                <button class="pagination-button">2</button>
+                <button class="pagination-button">3</button>
+                <button class="pagination-button"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </main>
+
+    <div style="text-align: center; padding: 2rem; color: var(--text-color); font-style: italic; max-width: 800px; margin: 0 auto;">
+        <p>Todo esto sigue siendo una practica, aun esta en desarollo, luego se agregara imagenes de los productos reales</p>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Melodía Llanera</h3>
+                <p>Tu tienda de instrumentos llaneros en Colombia</p>
+            </div>
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <a href="products.html">Productos</a>
+                <a href="about.html">Sobre Nosotros</a>
+                <a href="contact.html">Contacto</a>
+            </div>
+            <div class="footer-section">
+                <h3>Síguenos</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Melodía Llanera. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="../js/products.js"></script>
+</body>
+</html>
